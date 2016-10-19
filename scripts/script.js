@@ -2,12 +2,11 @@
 var houseColumn = document.querySelector('.house-column'),
 	senateColumn = document.querySelector('.senate-column')
 	inputNode = document.querySelector('input'),
-	baseUrl = "http://congress.api.sunlightfoundation.com/bills?apikey=149a2a8730aa4936bab76017c47d8dab"
+	baseUrl = "https://congress.api.sunlightfoundation.com/bills/search?apikey=149a2a8730aa4936bab76017c47d8dab"
 
 var billsToHTML = function(billsArray){
 	var htmlString = ''
 	for(var i = 0; i < billsArray.length; i++){
-		console.log(billsArray[i])
 		var billDetails = billsArray[i]
 		// if (billDetails.short_title) {
 		// 	var title = billDetails.short_title
@@ -40,17 +39,32 @@ var senateResponseHandler = function(apiResponse){
 	senateColumn.innerHTML = htmlString
 }
 
-var fetchSenateBills = function() {
-	var url = baseUrl + '&chamber=senate'
+var fetchSenateBills = function(searchQuery) {
+	var url = baseUrl + '&chamber=senate&query=' + searchQuery
+	console.log(url)
 	var promise = $.getJSON(url)
 	promise.then(senateResponseHandler)
 }
 
-var fetchHouseBills = function() {
-	var url = baseUrl + '&chamber=house'
+var fetchHouseBills = function(searchQuery) {
+	var url = baseUrl + '&chamber=house&query=' + searchQuery
 	var promise = $.getJSON(url)
 	promise.then(houseResponseHandler)
 }
+
+var search = function(event){
+	console.log(event.keyCode)
+	if(event.keyCode === 13){
+		//example searchQuery: query='United States of America'
+		//event.target is used so that this search function can be used for any target node
+		var searchQuery = event.target.value
+		fetchHouseBills(searchQuery)
+		fetchSenateBills(searchQuery)
+		event.target.value = ""
+	}
+}
+//example of desired url: baseUrl + query=transparency
+inputNode.addEventListener('keydown',search)
 
 fetchHouseBills()
 fetchSenateBills()
