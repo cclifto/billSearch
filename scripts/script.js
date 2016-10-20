@@ -2,7 +2,7 @@
 var houseColumn = document.querySelector('.house-column'),
 	senateColumn = document.querySelector('.senate-column')
 	inputNode = document.querySelector('input'),
-	baseUrl = "https://congress.api.sunlightfoundation.com/bills/search?apikey=149a2a8730aa4936bab76017c47d8dab"
+	baseUrl = "https://congress.api.sunlightfoundation.com/bills/search?apikey=149a2a8730aa4936bab76017c47d8dab&callback=?"
 
 var billsToHTML = function(billsArray){
 	var htmlString = ''
@@ -21,8 +21,9 @@ var billsToHTML = function(billsArray){
 		htmlString += '<h5>' + billDetails.sponsor.first_name + " " + billDetails.sponsor.last_name + '</h5>'
 		htmlString += '<h6>Introduced On: ' + billDetails.introduced_on + '</h6>'
 		htmlString += '<h6>Last Action At: ' + billDetails.last_action_at + '</h6>'
-		htmlString += '<h6>'+ billDetails.bill_id + '</h6>'
-
+		htmlString += '<h6><a href="' + billDetails.urls.govtrack +'">Click here to read bill</a></h6>'
+		htmlString += '<h6>'+ billDetails.bill_id + '</h6>'  
+// <a href="/" target="_blank">The home page will open in another tab.</a>
 		htmlString += '</div>'
 		//we should build the full htmlString and then write to innerHTML
 		//only once
