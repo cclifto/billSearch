@@ -1,4 +1,5 @@
 
+
 console.log($)
 console.log(Backbone)
 
@@ -10,7 +11,6 @@ console.log(Backbone)
 var billsToHTML = function(billsArray){
 	var htmlString = ''
 	for(var i = 0; i < billsArray.length; i++){
-		console.log(billsArray[i])
 		var billDetails = billsArray[i]
 		// if (billDetails.short_title) {
 		// 	var title = billDetails.short_title
@@ -117,4 +117,3 @@ var BillRouter = Backbone.Router.extend({
 var router = new BillRouter()
 
 inputNode.addEventListener('keydown', search)
-
