@@ -37,46 +37,78 @@ var billsToHTML = function(billsArray){
 var houseResponseHandler = function(apiResponse){
 	console.log(apiResponse.results)
 	var billsArray = apiResponse.results,
-		htmlString = '<h1>House Bills</h1>' + billsToHTML(billsArray)
-	houseColumn.innerHTML = htmlString
+		houseColNode = document.querySelector(".house-bills"),
+		htmlString = ""
+
+	htmlString += 	'<h1>House Bills</h1>'
+	htmlString += 	billsToHTML(billsArray)
+	houseColNode.innerHTML = htmlString
 }
 
 var senateResponseHandler = function(apiResponse){
 	console.log(apiResponse.results)
 	var billsArray = apiResponse.results,
-		htmlString = '<h1>Senate Bills</h1>' + billsToHTML(billsArray)
-	senateColumn.innerHTML = htmlString
+		senateColNode = document.querySelector(".senate-bills"),
+		htmlString = ""
+
+	htmlString += 	'<h1>Senate Bills</h1>'
+	htmlString += 	billsToHTML(billsArray)
+	senateColNode.innerHTML = htmlString
 }
 
 var fetchSenateBills = function(searchQuery) {
 	var url = baseUrl + '&chamber=senate&query=' + searchQuery
 	var promise = $.getJSON(url)
-	promise.then(senateResponseHandler)
+	return promise
 }
 
 var fetchHouseBills = function(searchQuery) {
 	var url = baseUrl + '&chamber=house&query=' + searchQuery
 	var promise = $.getJSON(url)
-	promise.then(houseResponseHandler)
+	return promise
 }
 
 var search = function(event){
 	if(event.keyCode === 13){
 		var searchQuery = event.target.value
-		location.hash = searchQuery
+		location.hash = "search/" + searchQuery
 		event.target.value = ""
 	}
 
 }
 
+var makeColumns = function(){
+	billsContainer.innerHTML = "<div class='bill-col senate-bills'></div>"
+	billsContainer.innerHTML += "<div class='bill-col house-bills'></div>"
+}
+
+//CONTROLLER
 var BillRouter = Backbone.Router.extend({
 	routes:{
-		"*default": "handleHome",
-		"search/:term": "handleSearch"
+		"home": "handleHome",
+		"search/:term": "handleSearch",
+		"*default": "handleDefault"
 	},
 	handleHome: function(){
 		billsContainer.innerHTML = "<h1>Welcome to bill search!</h1>"
 
+	},
+	handleSearch: function(term) {
+		//MODEL
+		console.log("running handleSearch")
+		//here we request data that we need
+		var housePromise = fetchHouseBills(term),
+			senatePromise = fetchSenateBills(term)
+
+		//VIEW
+		//sets up two empty divs for senate/house bill columns
+		makeColumns()
+		//builds html of each column from received data
+		housePromise.then(houseResponseHandler)
+		senatePromise.then(senateResponseHandler)
+	},
+	handleDefault: function() {
+		location.hash = "home"
 	},
 	initialize: function(){
 		Backbone.history.start()
