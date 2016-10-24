@@ -1,8 +1,11 @@
 
-var houseColumn = document.querySelector('.house-column'),
-	senateColumn = document.querySelector('.senate-column')
-	inputNode = document.querySelector('input'),
-	baseUrl = "https://congress.api.sunlightfoundation.com/bills/search?apikey=149a2a8730aa4936bab76017c47d8dab&callback=?"
+console.log($)
+console.log(Backbone)
+
+	
+	var inputNode = document.querySelector('input'),
+		billsContainer = document.querySelector('.bills-container'),
+		baseUrl = "https://congress.api.sunlightfoundation.com/bills/search?apikey=149a2a8730aa4936bab76017c47d8dab&callback=?"
 
 var billsToHTML = function(billsArray){
 	var htmlString = ''
@@ -60,14 +63,26 @@ var fetchHouseBills = function(searchQuery) {
 var search = function(event){
 	if(event.keyCode === 13){
 		var searchQuery = event.target.value
-		fetchHouseBills(searchQuery)
-		fetchSenateBills(searchQuery)
+		location.hash = searchQuery
 		event.target.value = ""
 	}
 
 }
 
+var BillRouter = Backbone.Router.extend({
+	routes:{
+		"*default": "handleHome",
+		"search/:term": "handleSearch"
+	},
+	handleHome: function(){
+		billsContainer.innerHTML = "<h1>Welcome to bill search!</h1>"
+
+	},
+	initialize: function(){
+		Backbone.history.start()
+	}
+})
+var router = new BillRouter()
+
 inputNode.addEventListener('keydown', search)
 
-fetchHouseBills()
-fetchSenateBills()

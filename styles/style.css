@@ -12,7 +12,9 @@
 .bills-container,.bill-col {
 	font-size: 0;
 }
-
+.bills-container h1{
+	font-size: 120px;
+}
 .bill-col > * {
 	font-size: medium;
 }
